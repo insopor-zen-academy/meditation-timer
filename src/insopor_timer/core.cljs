@@ -10,25 +10,15 @@
                       :played false}))
 
 
+;; --- private
 
 (defn- audio-element
-  "There has to be an audio tag with id audio in the page.
-
-  https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement"
   []
   (.getElementById js/document "audio"))
 
-
 (defn- play-error-handler [error]
-  (prn error)
-  (swap! state assoc :gesture-required true))
-
-;; http://diveintohtml5.info/everything.html
-(defn can-play?
-  "Checks if a given mimetype can be played by the browser."
-  [mime]
-  (not (empty? (and (.-canPlayType (audio-element))
-                    (replace (.canPlayType (audio-element) mime) #"no" "")))))
+  (prn "Error playing!")
+  (prn error))
 
 (def ^:private formats
   [{:format "ogg" :mime "audio/ogg; codecs='vorbis'"}
@@ -38,6 +28,13 @@
    ;;{:format "m4a" :mime "audio/m4a;"}
    ;;{:format "wav" :mime "audio/wav; codecs='1'"}
    ])
+
+;; http://diveintohtml5.info/everything.html
+(defn can-play?
+  "Checks if a given mimetype can be played by the browser."
+  [mime]
+  (not (empty? (and (.-canPlayType (audio-element))
+                    (replace (.canPlayType (audio-element) mime) #"no" "")))))
 
 (defn- can-play-reducer [result {:keys [format mime]}]
   (if (can-play? mime) (conj result format) result))
@@ -52,13 +49,12 @@
   [source]
   (str source "." (first (supported-formats))))
 
-(defn source []
-  (.-currentSrc (audio-element)))
+
+;; --- public setter
 
 (defn source! [source]
   (let [url (supported-source source)]
     (prn "setting source to" url)
-    ;;(.log js/console (streamed?) url)
     (aset (audio-element) "autoplay" "none")
     (aset (audio-element) "preload" "none")
     (aset (audio-element) "src" url)
@@ -70,10 +66,11 @@
   (let [promise (.play (audio-element))]
     (.log js/console "play returned" promise)
     (if promise
-      ;; if the play promise throws up^H^H an error...
+      ;; if the play promise throws up an error
       (.catch promise play-error-handler))))
 
 (defn start-countdown []
+  ;; TODO: Reset timer
           (js/setInterval (fn []
                             (if (> (:seconds @state) 0)
                               (swap! state update-in [:seconds] dec)
@@ -89,27 +86,14 @@
   [:div
    "Countdown: " (:seconds @state)])
 
-(defn hello-world []
+(defn insopor-timer []
   [:div
    [:h1 "Meditation Timer"]
    [timer-comp]
    [:button {:on-click #(start-countdown)}
-    "Start"]
+    "Start"]])
 
-   ])
-
-
-
-;; (source! "/snip")
-
-
-
-
-
-
-
-
-(reagent/render-component [hello-world]
+(reagent/render-component [insopor-timer]
                           (. js/document (getElementById "app")))
 
 (defn on-js-reload []
