@@ -95,7 +95,7 @@
                              (swap! state update-in [:seconds] dec)
                              (if (:meditating @state)
                                (do
-                                 (source! "/snip")
+                                 (source! "./snip")
                                  (play!)
                                  (reset-timer)))))
                          500)))
