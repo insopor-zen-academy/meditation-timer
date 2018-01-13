@@ -1,6 +1,8 @@
 (ns insopor-timer.core
   (:require [reagent.core :as reagent :refer [atom]]
-             [clojure.string :refer [replace]]))
+            [cljs-time.core :as time]
+            [cljs-time.format :as time-format]
+            [clojure.string :refer [replace]]))
 
 (enable-console-print!)
 
@@ -9,7 +11,8 @@
 (defonce interval_pids (atom []))
 
 (defonce state (atom {:seconds 60
-                      :meditating false}))
+                      :meditating false
+                      :end-time (time/now)}))
 
 
 ;; --- private
@@ -95,7 +98,7 @@
 
 (defn timer-comp []
   [:div
-   "Countdown: " (:seconds @state)])
+   (:seconds @state) " minutes to meditate"])
 
 (defn action-button []
   (cond
@@ -109,7 +112,22 @@
            :min "0"
            :max "240"
            :value (:seconds @state)
-           :on-change #(swap! state assoc :seconds (-> % .-target .-value))}])
+           :on-change (fn [e]
+                        (swap! state assoc :seconds (-> e .-target .-value))
+                        (swap! state assoc :end-time (time/plus (time/now)
+                                                                (time/minutes
+                                                                 (-> (:seconds @state)
+                                                                     js/parseInt)))))}])
+
+(defn time-comp
+  "Takes a cljs-time `time` object and renders it in `hh:mm`. For
+  `true`, it'll render the current time."
+  [time]
+  [:div
+   (str
+    "Ending time: "
+    (time-format/unparse (time-format/formatter "hh:mm")
+                         (time/to-default-time-zone (time/date-time time))))])
 
 (defn insopor-timer []
   [:div
@@ -118,6 +136,7 @@
     [:h1 "Meditation Timer"]
     [:div
      [timer-comp]]
+    [time-comp (:end-time @state)]
     [:div
      [time-input-comp]]
     [:div
