@@ -6,8 +6,6 @@
 
 (enable-console-print!)
 
-(println "This text is printed from src/insopor-timer/core.cljs. Go ahead and edit it and see reloading in action.")
-
 (defonce interval_pids (atom []))
 
 (defonce state (atom {:seconds 60
@@ -115,9 +113,7 @@
   [:input {:type "range"
            :min "0"
            :max "240"
-           :disabled (if (:meditating @state)
-                       true
-                       false)
+           :disabled (:meditating @state)
            :value (:seconds @state)
            :on-change (fn [e]
                         (swap! state assoc :seconds (-> e .-target .-value))
