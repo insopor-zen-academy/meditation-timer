@@ -6,9 +6,10 @@
 
 (println "This text is printed from src/insopor-timer/core.cljs. Go ahead and edit it and see reloading in action.")
 
-(defonce state (atom {:seconds 3
-                      :meditating false
-                      :played false}))
+(defonce interval_pids (atom []))
+
+(defonce state (atom {:seconds 60
+                      :meditating false}))
 
 
 ;; --- private
@@ -71,21 +72,22 @@
       (.catch promise play-error-handler))))
 
 (defn reset-timer []
-  (swap! state update-in [:meditating] not)
-  (swap! state assoc :seconds 3)
-  (js/clearInterval (:interval_pid @state)))
+  (swap! state assoc :meditating false)
+  (loop [[pid] @interval_pids]
+    (js/clearInterval pid))
+  (reset! interval_pids []))
 
 (defn start-countdown []
-  (reset-timer)
-  (swap! state assoc :interval_pid
+  (swap! state assoc :meditating true)
+  (swap! interval_pids conj
          (js/setInterval (fn []
                            (if (> (:seconds @state) 0)
                              (swap! state update-in [:seconds] dec)
-                             (if-not (:played @state)
+                             (if (:meditating @state)
                                (do
                                  (source! "/snip")
                                  (play!)
-                                 (swap! state update-in [:played] not)))))
+                                 (reset-timer)))))
                          500)))
 
 (defn stop-countdown []
@@ -102,12 +104,19 @@
     (:meditating @state) [:button {:on-click #(stop-countdown)}
                           "Stop"]))
 
+(defn time-input-comp []
+  [:input {:type "range"
+           :min "0"
+           :max "240"
+           :value (:seconds @state)
+           :on-change #(swap! state assoc :seconds (-> % .-target .-value))}])
+
 (defn insopor-timer []
   [:div
    [:h1 "Meditation Timer"]
    [timer-comp]
-   [action-button]
-   ])
+   [time-input-comp]
+   [action-button]])
 
 (reagent/render-component [insopor-timer]
                           (. js/document (getElementById "app")))
