@@ -33,7 +33,7 @@
 (def ^:private formats
   [{:format "ogg" :mime "audio/ogg; codecs='vorbis'"}
    {:format "mp3" :mime "audio/mpeg;"}
-   {:format "acc" :mime "audio/aac;"}
+   {:format "m4a" :mime "audio/aac;"}
    ;;{:format "mp4" :mime "audio/mp4; codecs='mp4a.40.2'"}
    ;;{:format "m4a" :mime "audio/m4a;"}
    ;;{:format "wav" :mime "audio/wav; codecs='1'"}

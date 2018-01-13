@@ -32,6 +32,12 @@ To create a production build run:
 And open your browser in `resources/public/index.html`. You will not
 get live reloading, nor a REPL. 
 
+## Audio Samples
+
+### AAC (iOS)
+
+`ffmpeg -i snip.mp3 -c:a aac -b:a 160k snip.m4a`
+
 ## License
 
 Copyright © 2018
