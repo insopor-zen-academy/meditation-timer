@@ -8,9 +8,16 @@
 
 (defonce interval_pids (atom []))
 
+(defn- now-plus-minutes
+  "Adds n `minutes` to the current time.
+  Returns a cljs-time object"
+  [minutes]
+  (time/plus (time/now)
+             (time/minutes minutes)))
+
 (defonce state (atom {:seconds 60
                       :meditating false
-                      :end-time (time/now)}))
+                      :end-time (now-plus-minutes 60)}))
 
 
 ;; --- private
@@ -118,11 +125,8 @@
            :disabled (:meditating @state)
            :value (:seconds @state)
            :on-change (fn [e]
-                        (swap! state assoc :seconds (-> e .-target .-value))
-                        (swap! state assoc :end-time (time/plus (time/now)
-                                                                (time/minutes
-                                                                 (-> (:seconds @state)
-                                                                     js/parseInt)))))}])
+                        (swap! state assoc :seconds (js/parseInt (-> e .-target .-value)))
+                        (swap! state assoc :end-time (now-plus-minutes (:seconds @state))))}])
 
 (defn time-comp
   "Takes a cljs-time `time` object and renders it in `hh:mm`. For
