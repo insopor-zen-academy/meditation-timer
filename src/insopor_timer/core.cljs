@@ -74,6 +74,8 @@
       ;; if the play promise throws up an error
       (.catch promise play-error-handler))))
 
+;; --- reagent helpers
+
 (defn reset-timer []
   (swap! state assoc :meditating false)
   (loop [[pid] @interval_pids]
@@ -96,6 +98,8 @@
 (defn stop-countdown []
   (reset-timer))
 
+;; --- reagent components
+
 (defn timer-comp []
   [:div
    (:seconds @state) " minutes to meditate"])
@@ -111,6 +115,9 @@
   [:input {:type "range"
            :min "0"
            :max "240"
+           :disabled (if (:meditating @state)
+                       true
+                       false)
            :value (:seconds @state)
            :on-change (fn [e]
                         (swap! state assoc :seconds (-> e .-target .-value))
@@ -142,9 +149,12 @@
     [:div
      [action-button]]]])
 
+
+;; -- reagent initialization
+
 (reagent/render-component [insopor-timer]
                           (. js/document (getElementById "app")))
 
 (defn on-js-reload []
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+  )
