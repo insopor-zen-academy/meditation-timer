@@ -7,6 +7,7 @@
 (println "This text is printed from src/insopor-timer/core.cljs. Go ahead and edit it and see reloading in action.")
 
 (defonce state (atom {:seconds 3
+                      :meditating false
                       :played false}))
 
 
@@ -69,29 +70,44 @@
       ;; if the play promise throws up an error
       (.catch promise play-error-handler))))
 
+(defn reset-timer []
+  (swap! state update-in [:meditating] not)
+  (swap! state assoc :seconds 3)
+  (js/clearInterval (:interval_pid @state)))
+
 (defn start-countdown []
-  ;; TODO: Reset timer
-          (js/setInterval (fn []
-                            (if (> (:seconds @state) 0)
-                              (swap! state update-in [:seconds] dec)
-                              (if-not (:played @state)
-                                (do
-                                  (source! "/snip")
-                                  (play!)
-                                  (swap! state update-in [:played] not)))))
-                                ;(js/clearInterval (:interval_pid @state)))))
-                            500))
+  (reset-timer)
+  (swap! state assoc :interval_pid
+         (js/setInterval (fn []
+                           (if (> (:seconds @state) 0)
+                             (swap! state update-in [:seconds] dec)
+                             (if-not (:played @state)
+                               (do
+                                 (source! "/snip")
+                                 (play!)
+                                 (swap! state update-in [:played] not)))))
+                         500)))
+
+(defn stop-countdown []
+  (reset-timer))
 
 (defn timer-comp []
   [:div
    "Countdown: " (:seconds @state)])
 
+(defn action-button []
+  (cond
+    (not (:meditating @state)) [:button {:on-click #(start-countdown)}
+                                "Start"]
+    (:meditating @state) [:button {:on-click #(stop-countdown)}
+                          "Stop"]))
+
 (defn insopor-timer []
   [:div
    [:h1 "Meditation Timer"]
    [timer-comp]
-   [:button {:on-click #(start-countdown)}
-    "Start"]])
+   [action-button]
+   ])
 
 (reagent/render-component [insopor-timer]
                           (. js/document (getElementById "app")))
