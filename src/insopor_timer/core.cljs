@@ -100,7 +100,9 @@
 
 (defn timer-comp []
   [:div
-   (:seconds @state) " minutes to meditate"])
+   [:strong
+    (:seconds @state)]
+   " minutes to meditate"])
 
 (defn action-button []
   (cond
@@ -127,10 +129,10 @@
   `true`, it'll render the current time."
   [time]
   [:div
-   (str
     "Ending time: "
-    (time-format/unparse (time-format/formatter "hh:mm")
-                         (time/to-default-time-zone (time/date-time time))))])
+    [:strong
+     (time-format/unparse (time-format/formatter "hh:mm")
+                          (time/to-default-time-zone (time/date-time time)))]])
 
 (defn insopor-timer []
   [:div
