@@ -113,10 +113,15 @@
 
 (defn insopor-timer []
   [:div
-   [:h1 "Meditation Timer"]
-   [timer-comp]
-   [time-input-comp]
-   [action-button]])
+   [:center
+    [:img {:src "./logo.png"}]
+    [:h1 "Meditation Timer"]
+    [:div
+     [timer-comp]]
+    [:div
+     [time-input-comp]]
+    [:div
+     [action-button]]]])
 
 (reagent/render-component [insopor-timer]
                           (. js/document (getElementById "app")))
