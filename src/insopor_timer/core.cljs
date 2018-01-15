@@ -2,6 +2,7 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [cljs-time.core :as time]
             [cljs-time.format :as time-format]
+            [cljs-time.coerce :as time-coerce]
             [clojure.string :refer [replace]]))
 
 (enable-console-print!)
@@ -85,12 +86,13 @@
     (/ (:seconds @state) 60)
     (:seconds @state)))
 
-(defn- interval-time []
-  (if (:speedup @state)
-    ;; Minutes become seconds
-    (/ 1000 60)
-    ;; Real Time
-    1000))
+(defn- seconds-to-end
+  "Calculates the remaining seconds from `now` to `:end-time`"
+  []
+  (/ (- (.getTime (time-coerce/to-date
+                   (:end-time @state)))
+        (.getTime (js/Date.)))
+     1000))
 
 ;; --- public setter
 
@@ -120,15 +122,17 @@
 
 (defn start-countdown []
   (swap! state assoc :meditating true)
+  (swap! state assoc :start-time (time/now))
+  (swap! state assoc :end-time (now-plus-seconds (:seconds @state)))
   (schedule-play!)
   (swap! interval_pids conj
          (js/setInterval (fn []
                            (if (> (:seconds @state) 0)
-                             (swap! state update-in [:seconds] dec)
+                             (swap! state assoc :seconds (seconds-to-end))
                              (if (:meditating @state)
                                (do
                                  (reset-timer)))))
-                         (interval-time))))
+                         1000)))
 
 (defn stop-countdown []
   (.stop (:audio-source @state))
