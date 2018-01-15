@@ -1,22 +1,13 @@
-* insopor-timer
-  :PROPERTIES:
-  :CUSTOM_ID: insopor-timer
-  :END:
+* Insopor Zen Academy - Meditation Timer
 
 FIXME: Write a one-line description of your library/project.
 
 ** Overview
-   :PROPERTIES:
-   :CUSTOM_ID: overview
-   :END:
 
 FIXME: Write a paragraph about the library/project and highlight its
 goals.
 
 ** Setup
-   :PROPERTIES:
-   :CUSTOM_ID: setup
-   :END:
 
 To get an interactive development environment run:
 
@@ -51,9 +42,6 @@ And open your browser in =resources/public/index.html=. You will not get
 live reloading, nor a REPL.
 
 ** Audio Samples
-   :PROPERTIES:
-   :CUSTOM_ID: audio-samples
-   :END:
 
 Create silence:
 http://activearchives.org/wiki/Padding\_an\_audio\_file\_with\_silence\_using\_sox
@@ -67,9 +55,6 @@ http://activearchives.org/wiki/Padding\_an\_audio\_file\_with\_silence\_using\_s
 #+END_EXAMPLE
 
 *** AAC (iOS)
-    :PROPERTIES:
-    :CUSTOM_ID: aac-ios
-    :END:
 
 =ffmpeg -i snip.mp3 -c:a aac -b:a 160k snip.m4a=
 
@@ -158,10 +143,17 @@ http://activearchives.org/wiki/Padding\_an\_audio\_file\_with\_silence\_using\_s
      }
 
 #+END_SRC
+
+** TODOs
+
+*** TODO Use page visibility API to display time left
+*** TODO Schedule playing of jingle with Web API
+- [ ] Is it on time on Android in background?
+- [ ] Does it run on Android home screen?
+
+*** TODO
+
 ** License
-   :PROPERTIES:
-   :CUSTOM_ID: license
-   :END:
 
 Copyright © 2018
 
