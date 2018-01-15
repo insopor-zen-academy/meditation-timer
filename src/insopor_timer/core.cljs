@@ -1,5 +1,6 @@
 (ns insopor-timer.core
   (:require [reagent.core :as reagent :refer [atom]]
+            [goog.string :as goog-string]
             [cljs-time.core :as time]
             [cljs-time.format :as time-format]
             [cljs-time.coerce :as time-coerce]
@@ -150,10 +151,10 @@
 (defn timer-comp []
   [:div.timer
    [:strong
-    (goog.string/format "%02i"
+    (goog-string/format "%02i"
                         (int (/ (:seconds @state) 60)))
     ":"
-    (goog.string/format "%02i"
+    (goog-string/format "%02i"
                         (mod (:seconds @state) 60))]
    " (mm:ss) to meditate"])
 
