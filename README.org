@@ -9,13 +9,18 @@ goals.
 
 ** Setup
 
+Configure your local network IP in =project.clj=. The default
+configuration for an interactive development environment would be to
+just use =localhost=, but configuring an IP means that you can connect
+other clients (such as phones) over the network with live reloading.
+
 To get an interactive development environment run:
 
 #+BEGIN_EXAMPLE
     lein figwheel
 #+END_EXAMPLE
 
-and open your browser at [[http://localhost:3449/][localhost:3449]].
+and open your browser at [[http://your_local_ip:3449/][your_local_ip:3449]].
 This will auto compile and send all changes to the browser without the
 need to reload. After the compilation process is complete, you will get
 a Browser Connected REPL. An easy way to try it is:
