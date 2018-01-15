@@ -59,6 +59,23 @@
   [source]
   (str source "." (first (supported-formats))))
 
+(defn- load-sound
+  "XMLHttpRequest to load a sound sample under `url` into the Web
+  Audio API `context`. Calls `callback` with a resulting `buffer`."
+  [url context callback]
+  (let [request (js/XMLHttpRequest.)]
+    (.open request "GET" url true)
+    (set! (.-responseType request) "arraybuffer")
+    (set! (.-onload request) (fn []
+                               (.decodeAudioData
+                                context
+                                (.-response request)
+                                (fn [buffer]
+                                  (callback buffer))
+                                (fn [e]
+                                  (prn "Error loading sound: " e)))))
+    (.send request)))
+
 
 ;; --- public setter
 
@@ -67,9 +84,11 @@
   (prn "scheduling play...")
   (let [audio_context (or js/AudioContext
                           js/webkitAudioContext)
-        context (audio_context.)]
+        context (audio_context.)
+        url (supported-source "./snip")]
 
-    (js/loadSound "./snip.mp3" context (fn [buffer]
+    ;; (js/loadSound url context (fn [buffer]
+    (load-sound url context (fn [buffer]
                                          (let [source (.createBufferSource context)]
                                            (set! (.-buffer source) buffer)
                                            (.connect source (.-destination context))
@@ -130,10 +149,10 @@
   `true`, it'll render the current time."
   [time]
   [:div
-    "Ending time: "
-    [:strong
-     (time-format/unparse (time-format/formatter "hh:mm")
-                          (time/to-default-time-zone (time/date-time time)))]])
+   "Ending time: "
+   [:strong
+    (time-format/unparse (time-format/formatter "hh:mm")
+                         (time/to-default-time-zone (time/date-time time)))]])
 
 (defn insopor-timer []
   [:div
