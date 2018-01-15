@@ -16,6 +16,8 @@
              (time/minutes minutes)))
 
 (defonce state (atom {:seconds 60
+                      :sound "inkin"
+                      :debug false
                       :meditating false
                       :end-time (now-plus-minutes 60)
                       :audio-source nil}))
@@ -86,7 +88,7 @@
   (let [audio_context (or js/AudioContext
                           js/webkitAudioContext)
         context (audio_context.)
-        url (supported-source "./sounds/inkin")]
+        url (supported-source (str "./sounds/" (:sound @state)))]
 
     (load-sound url context (fn [buffer]
                               (let [source (.createBufferSource context)]
@@ -156,6 +158,23 @@
     (time-format/unparse (time-format/formatter "hh:mm")
                          (time/to-default-time-zone (time/date-time time)))]])
 
+(defn sound-comp []
+  [:select {:on-change #(swap! state assoc :sound (-> % .-target .-value))}
+   [:option {:value "inkin"
+             :selected (= "inkin" (:sound @state))}
+    "Inkin"]
+   [:option {:value "snip"
+             :selected (= "snip" (:sound @state))}
+    "Snip"]])
+
+(defn debug-comp []
+  [:div
+   "Debug: "
+   [:input {:type "checkbox"
+            :on-change #(swap! state update-in [:debug] not)}]
+   (if (:debug @state)
+     [:div (str @state)])])
+
 (defn insopor-timer []
   [:div
    [:center
@@ -165,9 +184,12 @@
      [timer-comp]]
     [time-comp (:end-time @state)]
     [:div
-     [time-input-comp]]
+     [time-input-comp]
+     [sound-comp]]
     [:div
-     [action-button]]]])
+     [action-button]]]
+   [debug-comp]
+   ])
 
 
 ;; -- reagent initialization
