@@ -15,7 +15,7 @@
   (time/plus (time/now)
              (time/seconds seconds)))
 
-(defonce state (atom {:seconds 60
+(defonce state (atom {:seconds (* 60 60)
                       :sound "inkin"
                       :debug false
                       :speedup false
@@ -155,6 +155,7 @@
 
 (defn time-input-comp []
   [:input {:type "range"
+           :class "slider"
            :min "0"
            :max "240"
            :disabled (:meditating @state)
@@ -174,12 +175,12 @@
                          (time/to-default-time-zone (time/date-time time)))]])
 
 (defn sound-comp []
-  [:select {:on-change #(swap! state assoc :sound (-> % .-target .-value))}
-   [:option {:value "inkin"
-             :selected (= "inkin" (:sound @state))}
+  [:select
+   {:defaultValue (:sound @state)
+    :on-change #(swap! state assoc :sound (-> % .-target .-value))}
+   [:option {:value "inkin"}
     "Inkin"]
-   [:option {:value "snip"
-             :selected (= "snip" (:sound @state))}
+   [:option {:value "snip"}
     "Snip"]])
 
 (defn debug-comp []
@@ -197,11 +198,17 @@
             :disabled (:meditating @state)
             :on-change #(swap! state update-in [:speedup] not)}]])
 
-(defn insopor-timer []
+(defn debug-features-com []
   [:div
+   [speedup-comp]
+   [debug-comp]])
+
+(defn insopor-timer []
+  [:div.container
    [:center
-    [:img {:src "./logo.png"}]
-    [:h1 "Meditation Timer"]
+    [:h1
+     [:img.logo {:src "./logo.png"}]
+     "Meditation Timer"]
     [:div
      [timer-comp]]
     [time-comp (:end-time @state)]
@@ -209,8 +216,7 @@
      [time-input-comp]
      [sound-comp]]
     [action-button-comp]]
-   [speedup-comp]
-   [debug-comp]])
+   [debug-features-com]])
 
 
 ;; -- reagent initialization

@@ -1,2 +1,94 @@
-/* some style */
+.logo {
+  height: 1.2em;
+  padding-right: 0.2em;
+}
 
+
+
+/* Time range slider: Generated with http://danielstern.ca/range.css/#/ */
+
+input[type=range].slider {
+  -webkit-appearance: none;
+  width: 100%;
+  margin: 6.7px 0;
+}
+input[type=range].slider:focus {
+  outline: none;
+}
+input[type=range].slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 25.6px;
+  cursor: pointer;
+  box-shadow: 1.9px 1.9px 1px #710000, 0px 0px 1.9px #8b0000;
+  background: #434d4d;
+  border-radius: 0px;
+  border: 0px solid #010101;
+}
+input[type=range].slider::-webkit-slider-thumb {
+  box-shadow: 0px 0px 1px #050000, 0px 0px 0px #1f0000;
+  border: 0px solid #ff1e00;
+  height: 39px;
+  width: 20px;
+  border-radius: 50px;
+  background: rgba(165, 0, 0, 0.93);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -6.7px;
+}
+input[type=range].slider:focus::-webkit-slider-runnable-track {
+  background: #546060;
+}
+input[type=range].slider::-moz-range-track {
+  width: 100%;
+  height: 25.6px;
+  cursor: pointer;
+  box-shadow: 1.9px 1.9px 1px #710000, 0px 0px 1.9px #8b0000;
+  background: #434d4d;
+  border-radius: 0px;
+  border: 0px solid #010101;
+}
+input[type=range].slider::-moz-range-thumb {
+  box-shadow: 0px 0px 1px #050000, 0px 0px 0px #1f0000;
+  border: 0px solid #ff1e00;
+  height: 39px;
+  width: 20px;
+  border-radius: 50px;
+  background: rgba(165, 0, 0, 0.93);
+  cursor: pointer;
+}
+input[type=range].slider::-ms-track {
+  width: 100%;
+  height: 25.6px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range].slider::-ms-fill-lower {
+  background: #323a3a;
+  border: 0px solid #010101;
+  border-radius: 0px;
+  box-shadow: 1.9px 1.9px 1px #710000, 0px 0px 1.9px #8b0000;
+}
+input[type=range].slider::-ms-fill-upper {
+  background: #434d4d;
+  border: 0px solid #010101;
+  border-radius: 0px;
+  box-shadow: 1.9px 1.9px 1px #710000, 0px 0px 1.9px #8b0000;
+}
+input[type=range].slider::-ms-thumb {
+  box-shadow: 0px 0px 1px #050000, 0px 0px 0px #1f0000;
+  border: 0px solid #ff1e00;
+  height: 39px;
+  width: 20px;
+  border-radius: 50px;
+  background: rgba(165, 0, 0, 0.93);
+  cursor: pointer;
+  height: 25.6px;
+}
+input[type=range].slider:focus::-ms-fill-lower {
+  background: #434d4d;
+}
+input[type=range].slider:focus::-ms-fill-upper {
+  background: #546060;
+}
