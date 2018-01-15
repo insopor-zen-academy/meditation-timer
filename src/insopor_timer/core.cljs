@@ -62,22 +62,20 @@
 
 ;; --- public setter
 
-(defn source! [source]
-  (let [url (supported-source source)]
-    (prn "setting source to" url)
-    (aset (audio-element) "autoplay" "none")
-    (aset (audio-element) "preload" "none")
-    (aset (audio-element) "src" url)
-    (aset (audio-element) "crossOrigin" "anonymous")))
 
+(defn schedule-play! []
+  (prn "scheduling play...")
+  (let [audio_context (or js/AudioContext
+                          js/webkitAudioContext)
+        context (audio_context.)]
 
-(defn play! []
-  (prn "playing...")
-  (let [promise (.play (audio-element))]
-    (.log js/console "play returned" promise)
-    (if promise
-      ;; if the play promise throws up an error
-      (.catch promise play-error-handler))))
+    (js/loadSound "./snip.mp3" context (fn [buffer]
+                                         (let [source (.createBufferSource context)]
+                                           (set! (.-buffer source) buffer)
+                                           (.connect source (.-destination context))
+                                           (.start source (+ (/ (:seconds @state)
+                                                                2)
+                                                             (.-currentTime context))))))))
 
 ;; --- reagent helpers
 
@@ -89,14 +87,13 @@
 
 (defn start-countdown []
   (swap! state assoc :meditating true)
+  (schedule-play!)
   (swap! interval_pids conj
          (js/setInterval (fn []
                            (if (> (:seconds @state) 0)
                              (swap! state update-in [:seconds] dec)
                              (if (:meditating @state)
                                (do
-                                 (source! "./snip")
-                                 (play!)
                                  (reset-timer)))))
                          500)))
 

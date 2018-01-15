@@ -10,13 +10,31 @@
     <link rel="apple-touch-icon" href="./lambda_logo.png">
   </head>
   <body>
-    <audio id="audio"></audio>
     <div id="app">
       <h2>Figwheel template</h2>
       <p>Checkout your developer console.</p>
     </div>
 
+    <script>
+
+     function loadSound(url, context, callback) {
+         var request = new XMLHttpRequest();
+         request.open('GET', url, true);
+         request.responseType = 'arraybuffer';
+
+         // Decode asynchronously
+         request.onload = function() {
+             context.decodeAudioData(request.response, function(buffer) {
+                 callback(buffer);
+             }, function(e) { console.log("Error loading sound: " + e) });
+         }
+         request.send();
+     }
+    </script>
+
     <script src="js/compiled/insopor_timer.js" type="text/javascript"></script>
+
+
 
   </body>
 

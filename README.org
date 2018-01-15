@@ -151,7 +151,6 @@ http://activearchives.org/wiki/Padding\_an\_audio\_file\_with\_silence\_using\_s
 - [ ] Is it on time on Android in background?
 - [ ] Does it run on Android home screen?
 
-*** TODO
 
 ** License
 
