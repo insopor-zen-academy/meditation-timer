@@ -8,20 +8,20 @@
 
 (defonce interval_pids (atom []))
 
-(defn- now-plus-minutes
-  "Adds n `minutes` to the current time.
+(defn- now-plus-seconds
+  "Adds n `seconds` to the current time.
   Returns a cljs-time object"
-  [minutes]
+  [seconds]
   (time/plus (time/now)
-             (time/minutes minutes)))
+             (time/seconds seconds)))
 
 (defonce state (atom {:seconds 60
                       :sound "inkin"
                       :debug false
+                      :speedup false
                       :meditating false
-                      :end-time (now-plus-minutes 60)
+                      :end-time (now-plus-seconds (* 60 60))
                       :audio-source nil}))
-
 
 ;; --- private
 
@@ -79,6 +79,17 @@
                                   (prn "Error loading sound: " e)))))
     (.send request)))
 
+(defn- scheduled-time []
+  (if (:speedup @state)
+    (/ (:seconds @state) 60)
+    (:seconds @state)))
+
+(defn- interval-time []
+  (if (:speedup @state)
+    ;; Minutes become seconds
+    (/ 1000 60)
+    ;; Real Time
+    1000))
 
 ;; --- public setter
 
@@ -95,8 +106,7 @@
                                 (set! (.-buffer source) buffer)
                                 (.connect source (.-destination context))
                                 (swap! state assoc :audio-source source)
-                                (.start source (+ (/ (:seconds @state)
-                                                     2)
+                                (.start source (+ (scheduled-time)
                                                   (.-currentTime context))))))))
 
 ;; --- reagent helpers
@@ -117,7 +127,7 @@
                              (if (:meditating @state)
                                (do
                                  (reset-timer)))))
-                         500)))
+                         (interval-time))))
 
 (defn stop-countdown []
   (.stop (:audio-source @state))
@@ -128,25 +138,28 @@
 (defn timer-comp []
   [:div
    [:strong
-    (:seconds @state)]
+    (/
+     (:seconds @state)
+     60)]
    " minutes to meditate"])
 
-(defn action-button []
-  (cond
-    (not (:meditating @state)) [:button {:on-click #(start-countdown)}
-                                "Start"]
-    (:meditating @state) [:button {:on-click #(stop-countdown)}
-                          "Stop"]))
+(defn action-button-comp []
+  [:div
+   (cond
+     (not (:meditating @state)) [:button {:on-click #(start-countdown)}
+                                 "Start"]
+     (:meditating @state) [:button {:on-click #(stop-countdown)}
+                           "Stop"])])
 
 (defn time-input-comp []
   [:input {:type "range"
            :min "0"
            :max "240"
            :disabled (:meditating @state)
-           :value (:seconds @state)
+           :value (/ (:seconds @state) 60)
            :on-change (fn [e]
-                        (swap! state assoc :seconds (js/parseInt (-> e .-target .-value)))
-                        (swap! state assoc :end-time (now-plus-minutes (:seconds @state))))}])
+                        (swap! state assoc :seconds (* 60 (js/parseInt (-> e .-target .-value))))
+                        (swap! state assoc :end-time (now-plus-seconds (:seconds @state))))}])
 
 (defn time-comp
   "Takes a cljs-time `time` object and renders it in `hh:mm`. For
@@ -175,6 +188,13 @@
    (if (:debug @state)
      [:div (str @state)])])
 
+(defn speedup-comp []
+  [:div
+   "Speed: "
+   [:input {:type "checkbox"
+            :disabled (:meditating @state)
+            :on-change #(swap! state update-in [:speedup] not)}]])
+
 (defn insopor-timer []
   [:div
    [:center
@@ -186,10 +206,9 @@
     [:div
      [time-input-comp]
      [sound-comp]]
-    [:div
-     [action-button]]]
-   [debug-comp]
-   ])
+    [action-button-comp]]
+   [speedup-comp]
+   [debug-comp]])
 
 
 ;; -- reagent initialization
