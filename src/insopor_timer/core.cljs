@@ -138,10 +138,12 @@
 (defn timer-comp []
   [:div
    [:strong
-    (/
-     (:seconds @state)
-     60)]
-   " minutes to meditate"])
+    (goog.string/format "%02i"
+                        (int (/ (:seconds @state) 60)))
+    ":"
+    (goog.string/format "%02i"
+                        (mod (:seconds @state) 60))]
+   " (mm:ss) to meditate"])
 
 (defn action-button-comp []
   [:div
