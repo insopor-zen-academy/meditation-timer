@@ -17,7 +17,8 @@
 
 (defonce state (atom {:seconds 60
                       :meditating false
-                      :end-time (now-plus-minutes 60)}))
+                      :end-time (now-plus-minutes 60)
+                      :audio-source nil}))
 
 
 ;; --- private
@@ -92,6 +93,7 @@
                                          (let [source (.createBufferSource context)]
                                            (set! (.-buffer source) buffer)
                                            (.connect source (.-destination context))
+                                           (swap! state assoc :audio-source source)
                                            (.start source (+ (/ (:seconds @state)
                                                                 2)
                                                              (.-currentTime context))))))))
@@ -117,6 +119,7 @@
                          500)))
 
 (defn stop-countdown []
+  (.stop (:audio-source @state))
   (reset-timer))
 
 ;; --- reagent components
