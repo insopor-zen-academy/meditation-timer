@@ -112,18 +112,25 @@
                                 (.start source (+ (scheduled-time)
                                                   (.-currentTime context))))))))
 
+(defn- set-start-time! []
+  (swap! state assoc :start-time (time/now)))
+
+(defn- set-end-time! []
+  (swap! state assoc :end-time (now-plus-seconds (:seconds @state))))
+
 ;; --- reagent helpers
 
 (defn reset-timer []
   (swap! state assoc :meditating false)
+  (swap! state assoc :seconds 0)
   (loop [[pid] @interval_pids]
     (js/clearInterval pid))
   (reset! interval_pids []))
 
 (defn start-countdown []
   (swap! state assoc :meditating true)
-  (swap! state assoc :start-time (time/now))
-  (swap! state assoc :end-time (now-plus-seconds (:seconds @state)))
+  (set-start-time!)
+  (set-end-time!)
   (schedule-play!)
   (swap! interval_pids conj
          (js/setInterval (fn []
@@ -167,8 +174,8 @@
            :value (/ (:seconds @state) 60)
            :on-change (fn [e]
                         (swap! state assoc :seconds (* 60 (js/parseInt (-> e .-target .-value))))
-                        (swap! state assoc :start-time (time/now))
-                        (swap! state assoc :end-time (now-plus-seconds (:seconds @state))))}])
+                        (set-start-time!)
+                        (set-end-time!))}])
 
 (defn time-comp
   "Takes a cljs-time `time` object and renders it in `hh:mm`. For
@@ -182,10 +189,8 @@
   [:select.sound-select
    {:defaultValue (:sound @state)
     :on-change #(swap! state assoc :sound (-> % .-target .-value))}
-   [:option {:value "inkin"}
-    "Inkin"]
-   [:option {:value "snip"}
-    "Snip"]])
+   [:option {:value "inkin"} "Inkin"]
+   [:option {:value "snip"} "Snip"]])
 
 (defn debug-comp []
   [:div
@@ -204,7 +209,7 @@
 
 (defn debug-features-com []
   [:div.debug-features
-   [speedup-comp]
+   ;; [speedup-comp]
    [debug-comp]])
 
 (defn insopor-timer []
