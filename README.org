@@ -147,9 +147,11 @@ http://activearchives.org/wiki/Padding\_an\_audio\_file\_with\_silence\_using\_s
 ** TODOs
 
 *** TODO Use page visibility API to display time left
-*** TODO Schedule playing of jingle with Web API
-- [ ] Is it on time on Android in background?
-- [ ] Does it run on Android home screen?
+*** DONE Schedule playing of jingle with Web API
+- [X] Is it on time on Android in background?
+- [X] Does it run on Android home screen?
+
+*** TODO Stop a scheduled play when 'stop'ing
 
 
 ** License
