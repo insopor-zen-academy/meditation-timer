@@ -88,15 +88,14 @@
         context (audio_context.)
         url (supported-source "./snip")]
 
-    ;; (js/loadSound url context (fn [buffer]
     (load-sound url context (fn [buffer]
-                                         (let [source (.createBufferSource context)]
-                                           (set! (.-buffer source) buffer)
-                                           (.connect source (.-destination context))
-                                           (swap! state assoc :audio-source source)
-                                           (.start source (+ (/ (:seconds @state)
-                                                                2)
-                                                             (.-currentTime context))))))))
+                              (let [source (.createBufferSource context)]
+                                (set! (.-buffer source) buffer)
+                                (.connect source (.-destination context))
+                                (swap! state assoc :audio-source source)
+                                (.start source (+ (/ (:seconds @state)
+                                                     2)
+                                                  (.-currentTime context))))))))
 
 ;; --- reagent helpers
 
