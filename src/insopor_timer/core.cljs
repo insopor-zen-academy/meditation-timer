@@ -136,7 +136,7 @@
 ;; --- reagent components
 
 (defn timer-comp []
-  [:div
+  [:div.timer
    [:strong
     (goog.string/format "%02i"
                         (int (/ (:seconds @state) 60)))
@@ -146,7 +146,7 @@
    " (mm:ss) to meditate"])
 
 (defn action-button-comp []
-  [:div
+  [:div.action-buttons
    (cond
      (not (:meditating @state)) [:button {:on-click #(start-countdown)}
                                  "Start"]
@@ -168,14 +168,14 @@
   "Takes a cljs-time `time` object and renders it in `hh:mm`. For
   `true`, it'll render the current time."
   [time]
-  [:div
+  [:div.ending-time
    "Ending time: "
    [:strong
     (time-format/unparse (time-format/formatter "hh:mm")
                          (time/to-default-time-zone (time/date-time time)))]])
 
 (defn sound-comp []
-  [:select
+  [:select.sound-select
    {:defaultValue (:sound @state)
     :on-change #(swap! state assoc :sound (-> % .-target .-value))}
    [:option {:value "inkin"}
@@ -199,7 +199,7 @@
             :on-change #(swap! state update-in [:speedup] not)}]])
 
 (defn debug-features-com []
-  [:div
+  [:div.debug-features
    [speedup-comp]
    [debug-comp]])
 
@@ -209,12 +209,14 @@
     [:h1
      [:img.logo {:src "./logo.png"}]
      "Meditation Timer"]
-    [:div
-     [timer-comp]]
-    [time-comp (:end-time @state)]
-    [:div
-     [time-input-comp]
-     [sound-comp]]
+    [:div.timer-information
+     [timer-comp]
+     [time-comp (:end-time @state)]]
+    [:div.row
+     [:div.col-sm-10
+      [time-input-comp]]
+     [:div.col-sm-2
+      [sound-comp]]]
     [action-button-comp]]
    [debug-features-com]])
 

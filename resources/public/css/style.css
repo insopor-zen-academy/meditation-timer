@@ -1,6 +1,52 @@
+body {
+  background-color: #ddd !important;
+}
+
+h1 {
+  font-size: 2em !important;
+}
+
+.sound-select {
+  width: 100%;
+  background: #434d4d;
+  color: #eee;
+}
+
+button {
+  width: 40%;
+  background: #C00000;
+  background-image: -webkit-linear-gradient(top, #C00000, #A50000);
+  background-image: -moz-linear-gradient(top, #C00000, #A50000);
+  background-image: -ms-linear-gradient(top, #C00000, #A50000);
+  background-image: -o-linear-gradient(top, #C00000, #A50000);
+  background-image: linear-gradient(to bottom, #C00000, #A50000);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #eee !important;
+  font-size: 1.2em !important;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+
+}
+
 .logo {
   height: 1.2em;
   padding-right: 0.2em;
+}
+
+.timer, .ending-time {
+  font-size: 1.5em;
+}
+
+.timer-information, .action-buttons {
+  padding: 1em;
+}
+
+.debug-features {
+  position:absolute;
+  bottom:0px;
 }
 
 
