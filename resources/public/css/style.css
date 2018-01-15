@@ -9,7 +9,23 @@ h1 {
 .sound-select {
   width: 100%;
   background: #434d4d;
+  font-weight: bold;
+  text-align: center;
   color: #eee;
+  font-size: 1.2em;
+}
+
+@media (max-width: 575.99px) {
+  .sound-select {
+    margin-top: 1em;
+  }
+}
+
+.vertical-center {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
 }
 
 button {

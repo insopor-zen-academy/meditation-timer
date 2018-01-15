@@ -21,6 +21,7 @@
                       :speedup false
                       :meditating false
                       :end-time (now-plus-seconds (* 60 60))
+                      :start-time nil
                       :audio-source nil}))
 
 ;; --- private
@@ -119,6 +120,7 @@
 
 (defn start-countdown []
   (swap! state assoc :meditating true)
+  (swap! state assoc :start-time (js/Date.))
   (schedule-play!)
   (swap! interval_pids conj
          (js/setInterval (fn []
@@ -204,6 +206,7 @@
    [debug-comp]])
 
 (defn insopor-timer []
+[:div.jumbotron.vertical-center
   [:div.container
    [:center
     [:h1
@@ -218,7 +221,7 @@
      [:div.col-sm-2
       [sound-comp]]]
     [action-button-comp]]
-   [debug-features-com]])
+   [debug-features-com]]])
 
 
 ;; -- reagent initialization
