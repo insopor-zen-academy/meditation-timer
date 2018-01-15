@@ -208,29 +208,29 @@
    [debug-comp]])
 
 (defn insopor-timer []
-[:div.jumbotron.vertical-center
-  [:div.container
-   [:center
-    [:h1
-     [:img.logo {:src "./logo.png"}]
-     "Meditation Timer"]
-    [:div.timer-information
-     [timer-comp]
-     [:div.ending-time
-      "Ending time: "
-      [:strong
-       [time-comp (:end-time @state)]]]
-     [:div.starting-time
-      "Start time: "
-      [:strong
-       [time-comp (:start-time @state)]]]]
-    [:div.row
-     [:div.col-sm-10
-      [time-input-comp]]
-     [:div.col-sm-2
-      [sound-comp]]]
-    [action-button-comp]]
-   [debug-features-com]]])
+  [:div.jumbotron.vertical-center
+   [:div.container
+    [:center
+     [:h1
+      [:img.logo {:src "./logo.png"}]
+      "Meditation Timer"]
+     [:div.timer-information
+      [timer-comp]
+      [:div.ending-time
+       "Ending time: "
+       [:strong
+        [time-comp (:end-time @state)]]]
+      [:div.starting-time
+       "Start time: "
+       [:strong
+        [time-comp (:start-time @state)]]]]
+     [:div.row
+      [:div.col-sm-10
+       [time-input-comp]]
+      [:div.col-sm-2
+       [sound-comp]]]
+     [action-button-comp]]
+    [debug-features-com]]])
 
 
 ;; -- reagent initialization
