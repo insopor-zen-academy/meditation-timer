@@ -1,0 +1,168 @@
+* insopor-timer
+  :PROPERTIES:
+  :CUSTOM_ID: insopor-timer
+  :END:
+
+FIXME: Write a one-line description of your library/project.
+
+** Overview
+   :PROPERTIES:
+   :CUSTOM_ID: overview
+   :END:
+
+FIXME: Write a paragraph about the library/project and highlight its
+goals.
+
+** Setup
+   :PROPERTIES:
+   :CUSTOM_ID: setup
+   :END:
+
+To get an interactive development environment run:
+
+#+BEGIN_EXAMPLE
+    lein figwheel
+#+END_EXAMPLE
+
+and open your browser at [[http://localhost:3449/][localhost:3449]].
+This will auto compile and send all changes to the browser without the
+need to reload. After the compilation process is complete, you will get
+a Browser Connected REPL. An easy way to try it is:
+
+#+BEGIN_EXAMPLE
+    (js/alert "Am I connected?")
+#+END_EXAMPLE
+
+and you should see an alert in the browser window.
+
+To clean all compiled files:
+
+#+BEGIN_EXAMPLE
+    lein clean
+#+END_EXAMPLE
+
+To create a production build run:
+
+#+BEGIN_EXAMPLE
+    lein do clean, cljsbuild once min
+#+END_EXAMPLE
+
+And open your browser in =resources/public/index.html=. You will not get
+live reloading, nor a REPL.
+
+** Audio Samples
+   :PROPERTIES:
+   :CUSTOM_ID: audio-samples
+   :END:
+
+Create silence:
+http://activearchives.org/wiki/Padding\_an\_audio\_file\_with\_silence\_using\_sox
+
+#+BEGIN_EXAMPLE
+    sox -n -c 2 -r 44100 whitenoise.wav synth 0:20 whitenoise vol 0.2 fade q 1 00:20 1
+
+    sox whitenoise.wav snip.ogg output.wav
+
+    lame output.wav snip.mp3
+#+END_EXAMPLE
+
+*** AAC (iOS)
+    :PROPERTIES:
+    :CUSTOM_ID: aac-ios
+    :END:
+
+=ffmpeg -i snip.mp3 -c:a aac -b:a 160k snip.m4a=
+
+** Alternative approaches
+
+*** Audio Tag, Skip ahead
+#+BEGIN_SRC clojure
+
+(set! (.-currentTime (audio-element)) (:seconds @state))
+(.play (audio-element))
+
+#+END_SRC
+*** Web Audio API load audio and schedule playback
+
+#+BEGIN_EXAMPLE
+
+         window.AudioContext = window.AudioContext || window.webkitAudioContext;
+         var context = new AudioContext();
+
+         globalBuffer = null;
+
+         function loadSound(url, callback) {
+             var request = new XMLHttpRequest();
+             request.open('GET', url, true);
+             request.responseType = 'arraybuffer';
+
+             // Decode asynchronously
+             request.onload = function() {
+                 context.decodeAudioData(request.response, function(buffer) {
+                     globalBuffer = buffer;
+                     //callback(buffer);
+                 }, function(e) { console.log("Error: " + e) });
+             }
+             request.send();
+         }
+
+         function play() {
+             source = context.createBufferSource();
+             source.buffer = globalBuffer;
+             source.connect(context.destination);
+             // AudioScheduledSourceNode.start([when [, offset [, duration]]]);
+             source.start(context.currentTime, 2);
+         }
+
+         loadSound("./snip.mp3");
+#+END_EXAMPLE
+
+*** Web Audio API White Noise
+
+#+BEGIN_SRC javascript
+
+     var audioContext = new (window.webkitAudioContext || window.AudioContext)();
+
+     var bufferSize = 8 * audioContext.sampleRate,
+         noiseBuffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate),
+         output = noiseBuffer.getChannelData(0);
+     for (var i = 0; i < bufferSize; i++) {
+         output[i] = Math.random() * 2 - 1;
+     }
+
+     var whiteNoise = audioContext.createBufferSource();
+     whiteNoise.buffer = noiseBuffer;
+
+     console.log("Buffer duration: " + noiseBuffer.duration);
+
+
+      whiteNoise.connect(audioContext.destination);
+
+     audioElement = document.getElementById("audio");
+
+     source = audioContext.createMediaElementSource(audioElement);
+     source.connect(audioContext.destination);
+
+     //whiteNoise.loop = true;
+
+     function start() {
+
+                        whiteNoise.start();
+
+
+
+
+         /* setTimeout(function() {
+          *     whiteNoise.stop();
+          * }, 8000);*/
+     }
+
+#+END_SRC
+** License
+   :PROPERTIES:
+   :CUSTOM_ID: license
+   :END:
+
+Copyright © 2018
+
+Distributed under the AGPL.
