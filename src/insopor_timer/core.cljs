@@ -21,7 +21,7 @@
                       :speedup false
                       :meditating false
                       :end-time (now-plus-seconds (* 60 60))
-                      :start-time nil
+                      :start-time (time/now)
                       :audio-source nil}))
 
 ;; --- private
@@ -120,7 +120,6 @@
 
 (defn start-countdown []
   (swap! state assoc :meditating true)
-  (swap! state assoc :start-time (js/Date.))
   (schedule-play!)
   (swap! interval_pids conj
          (js/setInterval (fn []
@@ -164,17 +163,16 @@
            :value (/ (:seconds @state) 60)
            :on-change (fn [e]
                         (swap! state assoc :seconds (* 60 (js/parseInt (-> e .-target .-value))))
+                        (swap! state assoc :start-time (time/now))
                         (swap! state assoc :end-time (now-plus-seconds (:seconds @state))))}])
 
 (defn time-comp
   "Takes a cljs-time `time` object and renders it in `hh:mm`. For
   `true`, it'll render the current time."
   [time]
-  [:div.ending-time
-   "Ending time: "
-   [:strong
-    (time-format/unparse (time-format/formatter "hh:mm")
-                         (time/to-default-time-zone (time/date-time time)))]])
+  [:span
+   (time-format/unparse (time-format/formatter "hh:mm")
+                        (time/to-default-time-zone (time/date-time time)))])
 
 (defn sound-comp []
   [:select.sound-select
@@ -214,7 +212,14 @@
      "Meditation Timer"]
     [:div.timer-information
      [timer-comp]
-     [time-comp (:end-time @state)]]
+     [:div.ending-time
+      "Ending time: "
+      [:strong
+       [time-comp (:end-time @state)]]]
+     [:div.starting-time
+      "Start time: "
+      [:strong
+       [time-comp (:start-time @state)]]]]
     [:div.row
      [:div.col-sm-10
       [time-input-comp]]
