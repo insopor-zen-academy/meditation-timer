@@ -86,7 +86,7 @@
   (let [audio_context (or js/AudioContext
                           js/webkitAudioContext)
         context (audio_context.)
-        url (supported-source "./snip")]
+        url (supported-source "./sounds/inkin")]
 
     (load-sound url context (fn [buffer]
                               (let [source (.createBufferSource context)]
