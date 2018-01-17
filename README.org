@@ -155,7 +155,8 @@ http://activearchives.org/wiki/Padding\_an\_audio\_file\_with\_silence\_using\_s
 *** TODO Re-implement =:speedup= for simulations
 *** TODO Upload only updated files on deployment
 *** TODO Add offline capabilities
-*** TODO Evaluate to send notifications
+    *** TODO Evaluate to send notifications
+*** TODO Catch =window close= and =page back= events
 *** DONE Schedule playing of jingle with Web API
 - [X] Is it on time on Android in background?
 - [X] Does it run on Android home screen?
